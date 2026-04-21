@@ -1,6 +1,6 @@
-# Assignment #7: Music Library API
+# Final Project: Music Tracking API
 
-A RESTful API for managing a music library built with Node.js, Express.js, and Sequelize ORM using SQLite database.
+A RESTful API for managing multiple songs and artists from various streaming platforms, all into one place.
 
 ## Installation
 
@@ -32,49 +32,40 @@ A RESTful API for managing a music library built with Node.js, Express.js, and S
 
 ## API Endpoints
 
-### Get All Tracks
-- **GET** `/api/tracks`
-- Returns all tracks in the database
 
-### Get Track by ID
-- **GET** `/api/tracks/:id`
-- Returns a specific track by ID
-
-### Create New Track
-- **POST** `/api/tracks`
-- Creates a new track
-- **Body:**
-  ```json
-  {
-    "songTitle": "Song Title",
-    "artistName": "Artist Name",
-    "albumName": "Album Name",
-    "genre": "Genre",
-    "duration": 180,
-    "releaseYear": 2024
-  }
-  ```
-
-### Update Track
-- **PUT** `/api/tracks/:id`
-- Updates an existing track
-- **Body:** Same as create track
-
-### Delete Track
-- **DELETE** `/api/tracks/:id`
-- Deletes a track by ID
 
 ## Database Schema
 
-The `tracks` table contains the following fields:
+1. The `Users` table contains the following fields:
 
-- `trackId` (INTEGER, Primary Key, Auto Increment)
-- `songTitle` (STRING, Required)
-- `artistName` (STRING, Required)
-- `albumName` (STRING, Required)
-- `genre` (STRING, Required)
-- `duration` (INTEGER, Required) - Duration in seconds
-- `releaseYear` (INTEGER, Required)
+- `Id` (INTEGER, Primary Key, Auto Increment)
+- `Username` (STRING, Required)
+- `Email` (STRING, Required)
+
+
+2. The `Services` table contains the following fields:
+
+- `Id` (INTEGER, Primary Key, Auto Increment)
+- `ServiceName` (STRING, Required)
+
+3. The `Artists` table contains the following fields:
+
+- `Id` (INTEGER, Primary Key, Auto Increment)
+- `ArtistName` (STRING, Required)
+
+4. The `Songs` table contains the following fields:
+
+- `Id` (INTEGER, Primary Key, Auto Increment)
+- `SongTitle` (STRING, Required)
+- `Artist_Id` (INTEGER, Required)
+- `Duration` (INTEGER)
+
+5. The `UserSongs` table contains the following fields:
+- `User_Id` (INTEGER, Foreign Key → Users.Id, Required)
+- `Song_Id` (INTEGER, Foreign Key → Songs.Id, Required)
+- `Service_Id` (INTEGER, Foreign Key → Services.Id, Required)
+- `PlayCount` (INTEGER, Required, Default: 0)
+- `LastPlayed` (DATETIME)
 
 ## Project Structure
 
