@@ -7,7 +7,6 @@ const db = new Sequelize({
     logging: false
 });
 
-// User Model
 const User = db.define('User', {
     userId: {
         type: DataTypes.INTEGER,
@@ -21,11 +20,18 @@ const User = db.define('User', {
     email: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    role: {
+        type: DataTypes.STRING,
+        defaultValue: 'user'
     }
 }, {
     timestamps: false
 });
-
 // Services Model
 const Services = db.define('Services', {
     serviceId: {

@@ -1,33 +1,62 @@
-// Import database and models
-const {db, User, Services, Artists, Songs, UserMusic} = require('./setup');
+const { db, User, Services, Artists, Songs, UserMusic } = require('./setup');
+const bcrypt = require('bcryptjs');
+require('dotenv').config();
 
-// Seed data
-const User = [
-  {
-    userID: 1,
-    Username: "AstralAcidApollo",
-    email: "Apollo.Lemke@newberry.edu",
-  }
-];
-
-// Seed database with sample data
 async function seedDatabase() {
-  try {
-    await db.authenticate();
-    console.log("Connected.");
+    const seedUsers = [
+        { 
+            userId: 1, 
+            Username: "AstralAcidApollo", 
+            email: "Apollo.Lemke@newberry.edu",
+            password: await bcrypt.hash(process.env.SEED_PASSWORD_1, 10),
+            role: 'admin'
+        },
+        { 
+            userId: 2, 
+            Username: "JohnDoe", 
+            email: "John.Doe@gmail.com",
+            password: await bcrypt.hash(process.env.SEED_PASSWORD_2, 10),
+            role: 'user'
+        }
+    ];
 
-    await db.sync({ force: true });
-    console.log("Synced.");
+    const seedServices = [
+        { serviceId: 1, ServiceName: "Spotify" },
+        { serviceId: 2, ServiceName: "Youtube Music" }
+    ];
 
-    await Track.bulkCreate(sampleTracks);
-    console.log("Seeded.");
+    const seedArtists = [
+        { artistId: 1, ArtistName: "DAGames" },
+        { artistId: 2, ArtistName: "Toby Fox" }
+    ];
 
-  } catch (err) {
-    console.error("Seeding error:", err);
-  } finally {
-    await db.close();
-    console.log("Closed.");
-  }
+    const seedSongs = [
+        { songId: 1, SongName: "Build Our Machine", artistId: 1, Duration: 245 },
+        { songId: 2, SongName: "Megalovania", artistId: 2, Duration: 156 }
+    ];
+
+    const seedUserMusic = [
+        { id: 1, userId: 1, songId: 1, serviceId: 1, PlayCount: 5, LastPlayed: new Date() },
+        { id: 2, userId: 1, songId: 2, serviceId: 2, PlayCount: 3, LastPlayed: new Date() }
+    ];
+
+    try {
+        await db.authenticate();
+        console.log("Connected.");
+        await db.sync({ force: true });
+        console.log("Synced.");
+        await User.bulkCreate(seedUsers);
+        await Services.bulkCreate(seedServices);
+        await Artists.bulkCreate(seedArtists);
+        await Songs.bulkCreate(seedSongs);
+        await UserMusic.bulkCreate(seedUserMusic);
+        console.log("Seeded.");
+    } catch (err) {
+        console.error("Seeding error:", err);
+    } finally {
+        await db.close();
+        console.log("Closed.");
+    }
 }
 
 seedDatabase();

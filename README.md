@@ -60,7 +60,7 @@ A RESTful API for managing multiple songs and artists from various streaming pla
 - `Artist_Id` (INTEGER, Required)
 - `Duration` (INTEGER)
 
-5. The `UserSongs` table contains the following fields:
+5. The `UserMusic` table contains the following fields:
 - `User_Id` (INTEGER, Foreign Key → Users.Id, Required)
 - `Song_Id` (INTEGER, Foreign Key → Songs.Id, Required)
 - `Service_Id` (INTEGER, Foreign Key → Services.Id, Required)
