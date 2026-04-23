@@ -6,14 +6,14 @@ async function seedDatabase() {
     const seedUsers = [
         { 
             userId: 1, 
-            Username: "AstralAcidApollo", 
+            username: "AstralAcidApollo", 
             email: "Apollo.Lemke@newberry.edu",
             password: await bcrypt.hash(process.env.SEED_PASSWORD_1, 10),
             role: 'admin'
         },
         { 
             userId: 2, 
-            Username: "JohnDoe", 
+            username: "JohnDoe", 
             email: "John.Doe@gmail.com",
             password: await bcrypt.hash(process.env.SEED_PASSWORD_2, 10),
             role: 'user'

@@ -12,10 +12,10 @@ app.use(express.json());
 // POST register
 app.post('/register', async (req, res) => {
     try {
-        const { Username, email, password } = req.body;
+        const { username, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
-            Username,
+            username: username,
             email,
             password: hashedPassword,
             role: 'user' // new users are always regular users
@@ -49,7 +49,7 @@ app.post('/login', async (req, res) => {
 
 //API Endpoint for Users
 // GET all Users
-app.get('/users', async (req, res) => {
+app.get('/users', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const users = await User.findAll();
         res.json(users);
@@ -58,7 +58,7 @@ app.get('/users', async (req, res) => {
     }
 });
 // GET one user by ID
-app.get('/users/:id', async (req, res) => {
+app.get('/users/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
         if (!user) return res.status(404).json({ error: 'User not found' });
@@ -68,7 +68,7 @@ app.get('/users/:id', async (req, res) => {
     }
 });
 // POST create a new user
-app.post('/users', async (req, res) => {
+app.post('/users', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const user = await User.create(req.body);
         res.status(201).json(user);
@@ -77,7 +77,7 @@ app.post('/users', async (req, res) => {
     }
 });
 // PUT update a user
-app.put('/users/:id', async (req, res) => {
+app.put('/users/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
         if (!user) return res.status(404).json({ error: 'User not found' });
@@ -88,7 +88,7 @@ app.put('/users/:id', async (req, res) => {
     }
 });
 // DELETE a user
-app.delete('/users/:id', async (req, res) => {
+app.delete('/users/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {        const user = await User.findByPk(req.params.id);
         if (!user) return res.status(404).json({ error: 'User not found' });
         await user.destroy();
@@ -100,7 +100,7 @@ app.delete('/users/:id', async (req, res) => {
 
 //API Endpoint for Services
 // GET all Services
-app.get('/services', async (req, res) => {
+app.get('/services', authenticateToken, async (req, res) => {
     try {
         const services = await Services.findAll();
         res.json(services);
@@ -110,7 +110,7 @@ app.get('/services', async (req, res) => {
 });
 
 // GET one service by ID
-app.get('/services/:id', async (req, res) => {
+app.get('/services/:id', authenticateToken, async (req, res) => {
     try {
         const service = await Services.findByPk(req.params.id);
         if (!service) return res.status(404).json({ error: 'Service not found' });
@@ -121,7 +121,7 @@ app.get('/services/:id', async (req, res) => {
 });
 
 // POST create a new service
-app.post('/services', async (req, res) => {
+app.post('/services', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const service = await Services.create(req.body);
         res.status(201).json(service);
@@ -131,7 +131,7 @@ app.post('/services', async (req, res) => {
 });
 
 // PUT update a service
-app.put('/services/:id', async (req, res) => {
+app.put('/services/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const service = await Services.findByPk(req.params.id);
         if (!service) return res.status(404).json({ error: 'Service not found' });
@@ -142,7 +142,7 @@ app.put('/services/:id', async (req, res) => {
     }
 });
 // DELETE a service
-app.delete('/services/:id', async (req, res) => {
+app.delete('/services/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const service = await Services.findByPk(req.params.id);
         if (!service) return res.status(404).json({ error: 'Service not found' });
@@ -155,7 +155,7 @@ app.delete('/services/:id', async (req, res) => {
 
 //API Endpoints for Artists
 // GET all artists
-app.get('/artists', async (req, res) => {
+app.get('/artists', authenticateToken, async (req, res) => {
     try {        const artists = await Artists.findAll();
         res.json(artists);
     } catch (err) {
@@ -163,7 +163,7 @@ app.get('/artists', async (req, res) => {
     }
 });
 // GET one artist by ID
-app.get('/artists/:id', async (req, res) => {
+app.get('/artists/:id', authenticateToken, async (req, res) => {
     try {        const artist = await Artists.findByPk(req.params.id);
         if (!artist) return res.status(404).json({ error: 'Artist not found' });
         res.json(artist);
@@ -172,7 +172,7 @@ app.get('/artists/:id', async (req, res) => {
     }
 });
 // POST create a new artist
-app.post('/artists', async (req, res) => {
+app.post('/artists', authenticateToken, authorizeAdmin, async (req, res) => {
     try {        const artist = await Artists.create(req.body);
         res.status(201).json(artist);
     } catch (err) {
@@ -180,7 +180,7 @@ app.post('/artists', async (req, res) => {
     }
 });
 // PUT update an artist
-app.put('/artists/:id', async (req, res) => {
+app.put('/artists/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {        const artist = await Artists.findByPk(req.params.id);
         if (!artist) return res.status(404).json({ error: 'Artist not found' });
         await artist.update(req.body);
@@ -190,7 +190,7 @@ app.put('/artists/:id', async (req, res) => {
     }
 });
 // DELETE an artist
-app.delete('/artists/:id', async (req, res) => {
+app.delete('/artists/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const artist = await Artists.findByPk(req.params.id);
         if (!artist) return res.status(404).json({ error: 'Artist not found' });
@@ -203,7 +203,7 @@ app.delete('/artists/:id', async (req, res) => {
 
 // API Endpoints for Songs
 // GET all songs
-app.get('/songs', async (req, res) => {
+app.get('/songs', authenticateToken, async (req, res) => {
     try {
         const songs = await Songs.findAll();
         res.json(songs);
@@ -212,7 +212,7 @@ app.get('/songs', async (req, res) => {
     }
 });
 // GET one song by ID
-app.get('/songs/:id', async (req, res) => {
+app.get('/songs/:id', authenticateToken, async (req, res) => {
     try {
         const song = await Songs.findByPk(req.params.id);
         if (!song) return res.status(404).json({ error: 'Song not found' });
@@ -222,7 +222,7 @@ app.get('/songs/:id', async (req, res) => {
     }
 });
 // POST create a new song
-app.post('/songs', async (req, res) => {
+app.post('/songs', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const song = await Songs.create(req.body);
         res.status(201).json(song);
@@ -231,7 +231,7 @@ app.post('/songs', async (req, res) => {
     }
 });
 // PUT update a song
-app.put('/songs/:id', async (req, res) => {
+app.put('/songs/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const song = await Songs.findByPk(req.params.id);
         if (!song) return res.status(404).json({ error: 'Song not found' });
@@ -242,7 +242,7 @@ app.put('/songs/:id', async (req, res) => {
     }
 });
 // DELETE a song
-app.delete('/songs/:id', async (req, res) => {
+app.delete('/songs/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const song = await Songs.findByPk(req.params.id);
         if (!song) return res.status(404).json({ error: 'Song not found' });
@@ -254,16 +254,18 @@ app.delete('/songs/:id', async (req, res) => {
 });
 // API Endpoints for UserMusic
 // GET all user music entries
-app.get('/usermusic', async (req, res) => {
-    try {        const userMusic = await UserMusic.findAll();
+app.get('/usermusic', authenticateToken, async (req, res) => {
+    try {
+        const userMusic = await UserMusic.findAll();
         res.json(userMusic);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 // GET one user music entry by ID
-app.get('/usermusic/:id', async (req, res) => {
-    try {        const entry = await UserMusic.findByPk(req.params.id);
+app.get('/usermusic/:id', authenticateToken, async (req, res) => {
+    try {
+        const entry = await UserMusic.findByPk(req.params.id);
         if (!entry) return res.status(404).json({ error: 'Entry not found' });
         res.json(entry);
     } catch (err) {
@@ -271,7 +273,7 @@ app.get('/usermusic/:id', async (req, res) => {
     }
 });
 // POST create a new user music entry
-app.post('/usermusic', async (req, res) => {
+app.post('/usermusic', authenticateToken, async (req, res) => {
     try {        const entry = await UserMusic.create(req.body);
         res.status(201).json(entry);
     } catch (err) {
@@ -279,7 +281,7 @@ app.post('/usermusic', async (req, res) => {
     }
 });
 // PUT update a user music entry
-app.put('/usermusic/:id', async (req, res) => {
+app.put('/usermusic/:id', authenticateToken, async (req, res) => {
     try {        const entry = await UserMusic.findByPk(req.params.id);
         if (!entry) return res.status(404).json({ error: 'Entry not found' });
         await entry.update(req.body);
@@ -288,9 +290,10 @@ app.put('/usermusic/:id', async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 });
-// DELETE a user music entry
-app.delete('/usermusic/:id', async (req, res) => {
-    try {        const entry = await UserMusic.findByPk(req.params.id);
+// DELETE a user music entry (Restricted to admins)
+app.delete('/usermusic/:id', authenticateToken, authorizeAdmin, async (req, res) => {
+    try {
+        const entry = await UserMusic.findByPk(req.params.id);
         if (!entry) return res.status(404).json({ error: 'Entry not found' });
         await entry.destroy();
         res.json({ message: 'Entry deleted' });
